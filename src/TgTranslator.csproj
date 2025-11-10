@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="BitFaster.Caching" Version="2.5.3" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="GoogleTranslateFreeApi" Version="2.1.1" />
     <PackageReference Include="Flurl" Version="4.0.0" />
     <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <PackageReference Include="IPAddressRange" Version="6.1.0" />
@@ -31,10 +32,6 @@
     <PackageReference Include="Telegram.Bot" Version="22.4.4" />
   </ItemGroup>
   
-  <ItemGroup>
-    <ProjectReference Include="..\..\TgTranslator.LanguageDetector\src\TgTranslator.LanguageDetector.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Update="languages.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
