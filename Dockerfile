@@ -2,14 +2,20 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
 
 # 1. Copia el archivo de solución y la carpeta 'src' completa.
-# Esto asegura que todas las dependencias entre proyectos se resuelvan.
+# Esto asegura que todas las dependencias entre proyectos se resuelvan y aprovecha el cache de Docker.
 COPY *.sln .
-COPY src/ ./src/
+COPY src/*.csproj ./src/
+COPY TgTranslator.LanguageDetector/src/*.csproj ./TgTranslator.LanguageDetector/src/
 
 # 2. Restaura las dependencias para toda la solución.
 RUN dotnet restore -r linux-musl-x64
 
-# 3. Publica el proyecto principal.
+# 3. Copia el resto del código fuente de ambos proyectos.
+# Esto asegura que todos los archivos necesarios para la compilación estén presentes.
+COPY src/ ./src/
+COPY TgTranslator.LanguageDetector/ ./TgTranslator.LanguageDetector/
+
+# 4. Publica el proyecto principal.
 # La bandera --no-restore se usa porque ya hemos restaurado todo en el paso anterior.
 RUN dotnet publish src/TgTranslator.csproj -c Release -o /app -r linux-musl-x64 --no-restore
 
@@ -22,4 +28,4 @@ COPY --from=build /app ./
 RUN adduser -S -g appuser appuser
 USER appuser
 
-ENTRYPOINT ["./TgTranslator"]
+ENTRYPOINT ["dotnet", "TgTranslator.dll"]
