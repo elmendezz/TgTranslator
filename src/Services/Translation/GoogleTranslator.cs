@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using GoogleTranslateFreeApi;
 using TgTranslator.Interfaces;
-using TgTranslator.Models;
 
 namespace TgTranslator.Services.Translation;
 

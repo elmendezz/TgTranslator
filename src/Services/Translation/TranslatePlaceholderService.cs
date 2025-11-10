@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using TgTranslator.Interfaces;
-using TgTranslator.Models;
 
 namespace TgTranslator.Services.Translation;
 
