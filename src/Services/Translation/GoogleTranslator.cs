@@ -13,7 +13,7 @@ public class GoogleTranslator : TgTranslator.Interfaces.ITranslator
     {
         // En la v1.1.1, el idioma de origen se detecta automáticamente y viene en la propiedad 'Language'
         var from = Language.Auto;
-        var to = Language.GetLanguage(targetLanguage);
+        var to = TranslationResultLanguages.GetLanguage(targetLanguage);
         
         var result = await _translator.TranslateAsync(text, from, to);
         
