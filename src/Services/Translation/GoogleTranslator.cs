@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using GoogleTranslateFreeApi;
 using TgTranslator.Interfaces;
+using TgTranslator.Models;
 
 namespace TgTranslator.Services.Translation;
 
-public class GoogleTranslator : ITranslator
+public class GoogleTranslator : Interfaces.ITranslator
 {
     private readonly GoogleTranslateFreeApi.GoogleTranslator _translator = new();
 
@@ -16,7 +17,7 @@ public class GoogleTranslator : ITranslator
         
         var result = await _translator.TranslateAsync(text, from, to);
         
-        return new Models.TranslationResult
+        return new TranslationResult
         {
             text = result.MergedTranslation,
             source_lang = result.Language.ISO639
