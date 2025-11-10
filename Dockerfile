@@ -1,17 +1,23 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
 
-# 1. Copia los archivos de proyecto (.sln y .csproj)
-# La ruta correcta es 'src/TgTranslator.csproj'
+# 1. Copia el archivo de solución
 COPY *.sln .
-COPY src/TgTranslator.csproj ./src/
 
-# 2. Restaura las dependencias. Esto aprovecha el caché de Docker.
+# 2. Crea la estructura de carpetas esperada por el .sln y copia el .csproj
+# El .sln espera el .csproj en 'src/TgTranslator/TgTranslator.csproj'
+# y en el host, el .csproj está en 'src/TgTranslator.csproj'
+RUN mkdir -p src/TgTranslator/
+COPY src/TgTranslator.csproj ./src/TgTranslator/
+
+# 3. Copia el resto del código fuente del proyecto a la ubicación esperada
+COPY src/ ./src/TgTranslator/
+
+# 4. Restaura las dependencias. Ahora el .sln debería encontrar el .csproj.
 RUN dotnet restore -r linux-musl-x64
 
-# 3. Copia el resto del código fuente y publica la aplicación
-COPY . .
-RUN dotnet publish src/TgTranslator.csproj -c Release -o /app -r linux-musl-x64 --no-restore
+# 5. Publica la aplicación
+RUN dotnet publish src/TgTranslator/TgTranslator.csproj -c Release -o /app -r linux-musl-x64 --no-restore
 
 # La imagen final usa el runtime de ASP.NET para Alpine, que es más ligero.
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
