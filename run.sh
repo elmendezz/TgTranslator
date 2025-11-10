@@ -38,11 +38,12 @@ docker stop "$CONTAINER_NAME" >/dev/null 2>&1
 docker rm "$CONTAINER_NAME" >/dev/null 2>&1
 
 echo "Actualizando la imagen base por si hay nuevas versiones..."
-docker pull mcr.microsoft.com/dotnet/aspnet:8.0-alpine-arm32v7 >/dev/null 2>&1
+docker pull mcr.microsoft.com/dotnet/aspnet:8.0-alpine >/dev/null 2>&1
 
 echo "Iniciando nuevo contenedor..."
 docker run -d --restart always \
   -p 8080:8080 \
+  -v tgtranslator_data:/app/data \
   -e "ConnectionStrings__TgTranslatorContext=${CONNECTION_STRING}" \
   -e "telegram__botToken=${TELEGRAM_BOT_TOKEN}" \
   --name "$CONTAINER_NAME" \
