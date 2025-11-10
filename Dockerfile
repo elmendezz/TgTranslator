@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /source
 
 # 1. Copia los archivos de proyecto (.sln y .csproj)
-# Asumimos que el .csproj está en la carpeta 'src'
+# La ruta correcta es 'src/TgTranslator.csproj'
 COPY *.sln .
 COPY src/TgTranslator.csproj ./src/
 
@@ -10,11 +10,11 @@ COPY src/TgTranslator.csproj ./src/
 RUN dotnet restore -r linux-musl-x64
 
 # 3. Copia el resto del código fuente y publica la aplicación
-COPY src/ ./src/
+COPY . .
 RUN dotnet publish src/TgTranslator.csproj -c Release -o /app -r linux-musl-x64 --no-restore
 
 # La imagen final usa el runtime de ASP.NET para Alpine, que es más ligero.
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 WORKDIR /app
 COPY --from=build /app ./
 
@@ -22,7 +22,7 @@ COPY --from=build /app ./
 RUN apk add --no-cache sqlite-libs && \
     mkdir /app/data
 
-# Crea un usuario no-root y le da permisos sobre el directorio de datos
+# Crea un usuario no-root para mayor seguridad y le da permisos sobre el directorio de datos
 RUN adduser --system --group appuser
 RUN chown -R appuser:appuser /app/data
 USER appuser
