@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using GoogleTranslateFreeApi;
 using TgTranslator.Interfaces;
+using TranslationResultDto = TgTranslator.Interfaces.TranslationResult;
 
 namespace TgTranslator.Services.Translation;
 
@@ -8,7 +9,7 @@ public class GoogleTranslator : TgTranslator.Interfaces.ITranslator
 {
     private readonly GoogleTranslateFreeApi.GoogleTranslator _translator = new();
 
-    public async Task<TranslationResult> TranslateTextAsync(string text, string targetLanguage)
+    public async Task<TranslationResultDto> TranslateTextAsync(string text, string targetLanguage)
     {
         // En la v1.1.1, el idioma de origen se detecta automáticamente y viene en la propiedad 'Language'
         var from = Language.Auto;
@@ -16,7 +17,7 @@ public class GoogleTranslator : TgTranslator.Interfaces.ITranslator
         
         var result = await _translator.TranslateAsync(text, from, to);
         
-        return new TranslationResult(
+        return new TranslationResultDto(
             Text: result.MergedTranslation,
             DetectedLanguage: result.Language.ISO639
         );
